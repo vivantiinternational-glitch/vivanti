@@ -1,4 +1,4 @@
-/* estilos.css · v1 · Colores, letras y forma de Vivanti */
+/* estilos.css · v4 · Colores, letras, forma y animaciones de Vivanti */
 
 /* 1. Los colores de la app, en un solo lugar */
 :root {
@@ -11,6 +11,7 @@
   --texto: #22302A;
   --gris: #6E7A75;
   --linea: #E3E6E3;
+  --rapido: 0.25s;
 }
 
 * { box-sizing: border-box; }
@@ -22,6 +23,8 @@ body {
   background: #F1F3F1;
 }
 
+button, input, select { font-family: inherit; }
+
 /* 2. Cada pantalla ocupa el ancho de un celular */
 .pantalla {
   max-width: 420px;
@@ -32,83 +35,230 @@ body {
   display: flex;
   flex-direction: column;
 }
+.pantalla.con-menu { padding-bottom: 90px; }   /* espacio para el menú de abajo */
 
-/* La clase «oculta» esconde una pantalla */
-.oculta { display: none; }
+/* La clase «oculta» esconde cualquier cosa */
+.oculta { display: none !important; }
 
-/* 3. Bienvenida */
+/* 3. ANIMACIONES ------------------------------------------------------------ */
+/* Al entrar a una pantalla: aparece subiendo un poquito */
+.entrando { animation: entrar 0.4s ease both; }
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Las tarjetas aparecen una tras otra (--i es su número en la lista) */
+.aparece { animation: entrar 0.45s ease both; animation-delay: calc(var(--i, 0) * 60ms); }
+
+/* Todos los botones se «hunden» un poco al tocarlos */
+button { transition: transform var(--rapido), filter var(--rapido), background var(--rapido); }
+button:active { transform: scale(0.95); }
+
+/* El corazón da un saltito al guardar */
+.salto { animation: salto 0.45s ease; }
+@keyframes salto {
+  0% { transform: scale(1); } 40% { transform: scale(1.5); } 100% { transform: scale(1); }
+}
+
+/* Paneles: el fondo se oscurece y el panel sube */
+.fondo-panel {
+  position: fixed; inset: 0; background: rgba(20, 35, 30, .45); z-index: 20;
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: oscurecer 0.25s ease both;
+}
+@keyframes oscurecer { from { opacity: 0; } to { opacity: 1; } }
+.panel {
+  width: 100%; max-width: 420px; background: #fff; border-radius: 22px 22px 0 0; padding: 18px 20px 24px;
+  animation: subir 0.35s cubic-bezier(.2,.9,.3,1.1) both;
+}
+@keyframes subir { from { transform: translateY(100%); } to { transform: none; } }
+#panel-ayuda { align-items: center; padding: 20px; }
+.ventana {
+  width: 100%; max-width: 380px; background: #fff; border-radius: 20px; padding: 20px;
+  animation: crecer 0.35s cubic-bezier(.2,.9,.3,1.2) both;
+}
+@keyframes crecer { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
+
+/* Mensajito flotante */
+.toast {
+  position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 30px); opacity: 0;
+  background: var(--verde-oscuro); color: #fff; padding: 10px 18px; border-radius: 30px; font-size: 14px;
+  transition: all 0.35s ease; z-index: 30; pointer-events: none; white-space: nowrap;
+}
+.toast.visible { opacity: 1; transform: translate(-50%, 0); }
+
+/* 4. Bienvenida */
 .bienvenida { background: #FFFFFF; position: relative; overflow: hidden; }
 .bienvenida > * { position: relative; z-index: 1; }
-.burbuja { position: absolute !important; border-radius: 50%; z-index: 0 !important; }
+.burbuja { position: absolute !important; border-radius: 50%; z-index: 0 !important; animation: flotar 6s ease-in-out infinite; }
 .burbuja.rosa { width: 260px; height: 260px; background: #FBE3DF; top: -80px; right: -90px; }
-.burbuja.verde { width: 230px; height: 230px; background: #E3F1EB; bottom: 60px; left: -120px; }
-.burbuja.mini { width: 60px; height: 60px; background: #FCEFD3; top: 70px; left: 22px; }
+.burbuja.verde { width: 230px; height: 230px; background: #E3F1EB; bottom: 60px; left: -120px; animation-delay: -2s; }
+.burbuja.mini { width: 60px; height: 60px; background: #FCEFD3; top: 70px; left: 22px; animation-delay: -4s; }
+@keyframes flotar { 50% { transform: translateY(12px); } }
 
 .hero { flex: 1; text-align: center; padding-top: 30px; }
-.logo-grande { width: 170px; }
+.logo-grande { width: 170px; animation: crecer 0.8s ease both; }
 .nombre {
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: normal;
-  font-size: 46px;
-  color: var(--verde-oscuro);
-  margin: 0 0 10px;
+  font-family: Georgia, "Times New Roman", serif; font-weight: normal; font-size: 46px;
+  color: var(--verde-oscuro); margin: 0 0 10px;
 }
 .lema { font-size: 16px; font-weight: 600; max-width: 260px; margin: 0 auto; line-height: 1.4; }
 .lema em { font-style: normal; color: #C2615A; }
-
 .puntos { display: flex; flex-direction: column; gap: 8px; margin: 22px 0 10px; text-align: left; }
 .punto {
-  background: #fff; border: 1px solid var(--linea); border-radius: 12px;
-  padding: 8px 12px; font-size: 14px; display: flex; gap: 10px; align-items: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,.04);
+  background: #fff; border: 1px solid var(--linea); border-radius: 12px; padding: 8px 12px; font-size: 14px;
+  display: flex; gap: 10px; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,.04);
+  animation: entrar 0.5s ease both;
 }
+.punto:nth-child(1) { animation-delay: .3s; }
+.punto:nth-child(2) { animation-delay: .45s; }
+.punto:nth-child(3) { animation-delay: .6s; }
 .ico { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
 .ico-verde { background: #E3F1EB; }
 .ico-rosa { background: #FBE3DF; }
 .ico-amarillo { background: #FCEFD3; }
 
-/* 4. Botones */
+/* 5. Botones */
 .boton {
-  background: var(--coral); color: #fff; border: none; border-radius: 12px;
-  padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer;
-  box-shadow: 0 6px 16px rgba(228,96,79,.35);
+  background: var(--coral); color: #fff; border: none; border-radius: 12px; width: 100%;
+  padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; margin: 8px 0;
+  box-shadow: 0 6px 16px rgba(228,96,79,.3);
 }
-.boton:hover { filter: brightness(1.05); }
+.boton:hover { filter: brightness(1.06); }
+.boton.secundario { background: #fff; color: var(--verde); border: 1.5px solid var(--verde); box-shadow: none; }
+.boton.hecho { background: var(--verde); box-shadow: none; }
+.enlace { background: none; border: none; color: var(--verde); font-weight: 600; font-size: 14px; cursor: pointer; padding: 4px 0; }
+.cerrar { background: none; border: none; font-size: 18px; color: var(--gris); cursor: pointer; }
 
-/* 5. Barra de arriba (pantalla de Inicio) */
+/* 6. Barra de arriba */
 .barra { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
 .marca { display: flex; align-items: center; gap: 6px; }
 .marca img { width: 30px; }
 .marca .palabra { font-family: Georgia, "Times New Roman", serif; font-size: 18px; color: var(--verde-oscuro); }
 .derecha { display: flex; align-items: center; gap: 12px; }
-.enlace { color: var(--verde); font-weight: 600; font-size: 14px; }
 .ayuda {
-  width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--verde);
-  color: var(--verde); font-weight: 700; display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--verde); background: #fff;
+  color: var(--verde); font-weight: 700; cursor: pointer;
 }
+.titulo { font-size: 22px; color: var(--verde-oscuro); margin: 0 0 6px; }
 
-/* 6. Filtros */
-.filtros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+/* 7. Filtros */
+.filtros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 6px; }
 .filtro {
-  background: #fff; border: 1px solid var(--linea); border-radius: 10px;
-  padding: 8px 6px; font-size: 13px; text-align: center; white-space: nowrap;
+  background: #fff; border: 1px solid var(--linea); border-radius: 10px; padding: 8px 6px;
+  font-size: 13px; color: var(--texto); width: 100%; cursor: pointer; text-align: center;
 }
+.filtro.activo { border-color: var(--verde); color: var(--verde); font-weight: 600; background: var(--verde-claro); }
+.contador { font-size: 12.5px; color: var(--gris); margin: 6px 0 10px; }
 
-/* 7. Tarjeta de cada empresa */
+/* 8. Tarjeta de cada oferta */
 .tarjeta {
-  background: #fff; border: 1px solid var(--linea); border-radius: 14px;
-  padding: 14px; margin-bottom: 12px; font-size: 14px; line-height: 1.6;
+  background: #fff; border: 1px solid var(--linea); border-radius: 14px; padding: 14px;
+  margin-bottom: 12px; font-size: 14px; line-height: 1.6; transition: box-shadow var(--rapido), transform var(--rapido);
 }
-.fila { display: flex; justify-content: space-between; align-items: center; }
+.tarjeta:hover { box-shadow: 0 6px 18px rgba(0,0,0,.07); transform: translateY(-2px); }
+.fila { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .tarjeta h2 { font-size: 16px; margin: 0; }
-.corazon { color: var(--coral); font-size: 18px; }
+.corazon { background: none; border: none; color: var(--coral); font-size: 20px; cursor: pointer; line-height: 1; }
 .descripcion { color: var(--gris); font-size: 13px; margin: 2px 0 0; }
 .specs { background: var(--verde-claro); border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 13.5px; }
 .specs .cargo { color: var(--verde); font-weight: 600; }
-.specs .etiqueta-dato { color: var(--gris); }
+.etiqueta-dato { color: var(--gris); }
 .ejemplo { font-size: 11px; background: #FBF1D6; color: #7A5B12; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
-.ver { color: var(--verde); font-weight: 600; }
+.ver { background: none; border: none; color: var(--verde); font-weight: 600; font-size: 14px; cursor: pointer; }
 
-/* 8. Aviso y mensajes */
+/* 9. Detalle */
+.detalle-nombre { font-size: 22px; margin: 0 0 6px; }
+.etiqueta { background: var(--verde-claro); color: var(--verde); font-size: 12px; padding: 3px 10px; border-radius: 6px; display: inline-block; }
+.cargo-grande { color: var(--verde); font-weight: 600; font-size: 16px; margin: 10px 0; }
+.caja { background: #fff; border: 1px solid var(--linea); border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+.caja b { color: var(--verde); }
+.caja ul { margin: 4px 0 0; padding-left: 18px; }
+
+/* 10. Formulario */
+.alerta { background: #FFF6E5; border: 1px solid #F2D9A6; color: #6B4E12; border-radius: 10px; padding: 10px 12px; font-size: 13px; margin: 10px 0; }
+.seccion { background: #fff; border: 1px solid var(--linea); border-radius: 12px; padding: 12px 14px; margin: 0 0 12px; }
+.seccion legend { font-weight: 700; color: var(--verde); padding: 0 6px; font-size: 14px; }
+.seccion label, .panel label { display: block; font-size: 13.5px; margin: 8px 0; }
+.seccion input[type=text], .seccion input[type=email], .seccion input[type=tel], .seccion input[type=url],
+.seccion input[type=number], .seccion select, .panel select {
+  display: block; width: 100%; margin-top: 4px; padding: 9px 10px; border: 1px solid var(--linea);
+  border-radius: 8px; background: var(--fondo); font-size: 14px; transition: border-color var(--rapido), box-shadow var(--rapido);
+}
+.seccion input:focus, .seccion select:focus, .panel select:focus { outline: none; border-color: var(--verde); box-shadow: 0 0 0 3px rgba(31,122,92,.15); }
+.seccion .opcion { display: flex; gap: 8px; align-items: center; margin: 4px 0; color: var(--gris); }
+.pregunta { display: block; font-size: 13.5px; margin: 12px 0 2px; }
+.nota-sec { font-size: 12px; color: var(--gris); font-style: italic; margin: 4px 0 6px; }
+
+/* 11. Mis solicitudes: línea de etapas */
+.etapas { list-style: none; margin: 12px 0 4px; padding: 0; }
+.etapas li { position: relative; padding: 0 0 14px 26px; font-size: 13.5px; color: var(--gris); }
+.etapas li::before {
+  content: ""; position: absolute; left: 3px; top: 4px; width: 11px; height: 11px; border-radius: 50%;
+  background: #fff; border: 2px solid #C9D1CD; transition: all .4s;
+}
+.etapas li::after { content: ""; position: absolute; left: 8.5px; top: 18px; bottom: 0; width: 2px; background: #C9D1CD; }
+.etapas li:last-child { padding-bottom: 0; }
+.etapas li:last-child::after { display: none; }
+.etapas li.hecha { color: var(--texto); }
+.etapas li.hecha::before { background: var(--verde); border-color: var(--verde); }
+.etapas li.hecha::after { background: var(--verde); }
+.etapas li.actual { color: var(--verde); font-weight: 700; }
+.etapas li.actual::before { background: var(--coral); border-color: var(--coral); animation: latido 1.6s ease infinite; }
+@keyframes latido { 0%,100% { box-shadow: 0 0 0 0 rgba(228,96,79,.45); } 50% { box-shadow: 0 0 0 7px rgba(228,96,79,0); } }
+.explica { display: block; font-size: 12px; color: var(--gris); font-weight: 400; line-height: 1.4; }
+.fecha { font-size: 12px; color: var(--gris); font-weight: 400; }
+
+/* 12. Menú de abajo */
+.menu {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px;
+  background: #fff; border-top: 1px solid var(--linea); display: flex; z-index: 10;
+  box-shadow: 0 -4px 14px rgba(0,0,0,.05);
+}
+.menu button {
+  flex: 1; background: none; border: none; padding: 10px 0 12px; font-size: 12px; color: var(--gris);
+  cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.menu button span { font-size: 18px; }
+.menu button.activo { color: var(--verde); font-weight: 700; }
+
+/* 13. Paneles */
+.panel h3, .ventana h3 { margin: 0; color: var(--verde-oscuro); }
+.botones-panel { gap: 10px; margin-top: 8px; }
+.ventana ol { padding-left: 20px; line-height: 1.7; font-size: 14px; }
+
+/* 14. Aviso y mensajes */
 .aviso { font-size: 11.5px; color: var(--gris); border-top: 1px solid var(--linea); padding-top: 8px; margin-top: auto; }
-.mensaje { color: var(--gris); font-style: italic; text-align: center; }
+.mensaje { color: var(--gris); font-style: italic; text-align: center; padding: 20px 0; }
+
+/* 15. NUEVO v4 · Inicio de sesión */
+.caja-login { background: #fff; border: 1px solid var(--linea); border-radius: 16px; padding: 16px; margin: 22px 0 8px; text-align: left; box-shadow: 0 6px 20px rgba(0,0,0,.05); animation: entrar .5s ease .2s both; }
+.caja-login label { display: block; font-size: 13.5px; margin: 0 0 10px; }
+.caja-login input {
+  display: block; width: 100%; margin-top: 4px; padding: 11px 12px; border: 1px solid var(--linea);
+  border-radius: 10px; background: var(--fondo); font-size: 15px; transition: border-color var(--rapido), box-shadow var(--rapido);
+}
+.caja-login input:focus { outline: none; border-color: var(--verde); box-shadow: 0 0 0 3px rgba(31,122,92,.15); }
+.error { color: #B3261E; font-size: 13px; min-height: 18px; margin: 0; }
+.temblor { animation: temblor .4s ease; }
+@keyframes temblor { 20%,60% { transform: translateX(-8px); } 40%,80% { transform: translateX(8px); } }
+button:disabled { opacity: .6; cursor: wait; }
+
+/* Pantalla de carga */
+.cargando { position: fixed; inset: 0; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; z-index: 50; color: var(--gris); }
+.cargando img { width: 90px; animation: latir 1.2s ease-in-out infinite; }
+@keyframes latir { 50% { transform: scale(1.08); } }
+
+/* 16. NUEVO v4 · Panel del administrador */
+.subtitulo { font-size: 16px; color: var(--verde-oscuro); margin: 6px 0; }
+.seccion label { display: block; font-size: 13.5px; margin: 8px 0; }
+.admin-item { background: #fff; border: 1px solid var(--linea); border-radius: 12px; padding: 12px; margin-bottom: 10px; font-size: 13.5px; }
+.admin-item .quien { color: var(--gris); font-size: 12.5px; }
+.admin-item .etapa-actual { color: var(--verde); font-weight: 700; margin: 6px 0; }
+.admin-botones { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.mini { border: 1px solid var(--linea); background: #fff; border-radius: 8px; padding: 6px 10px; font-size: 12.5px; cursor: pointer; }
+.mini.verde { background: var(--verde); color: #fff; border-color: var(--verde); }
+.mini.rojo { color: #B3261E; }
+.resultado-ok { color: var(--verde); font-weight: 700; }
+.resultado-no { color: #8A5A12; font-weight: 700; }
