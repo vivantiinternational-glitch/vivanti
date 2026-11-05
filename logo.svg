@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" width="240" height="200">
+  <!-- logo.svg · v1 · Logo de Vivanti (corazón con familia) -->
+  <g fill="none" stroke="#C98585" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M72 82 C 96 64, 112 46, 108 28 C 104 10, 80 6, 64 22 C 48 4, 18 8, 13 30 C 9 48, 26 66, 42 78"/>
+    <circle cx="44" cy="43" r="6.5" fill="#FFF"/>
+    <path d="M33 90 L34 63 Q35 54 44 53 Q53 54 54 63 L55 90" fill="#FFF"/>
+    <circle cx="77" cy="46" r="6.5" fill="#FFF"/>
+    <path d="M66 92 L67 66 Q68 57 77 56 Q86 57 87 66 L88 92" fill="#FFF"/>
+    <circle cx="60.5" cy="66" r="4.6" fill="#FFF"/>
+    <path d="M53 93 L54 79 Q55 73 60.5 73 Q66 73 67 79 L68 93" fill="#FFF"/>
+  </g>
+</svg>

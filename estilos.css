@@ -1,0 +1,114 @@
+/* estilos.css · v1 · Colores, letras y forma de Vivanti */
+
+/* 1. Los colores de la app, en un solo lugar */
+:root {
+  --verde: #1F7A5C;
+  --verde-oscuro: #1E4D43;
+  --verde-claro: #EAF3EF;
+  --coral: #E4604F;
+  --rosa-logo: #C98585;
+  --fondo: #FAFAF7;
+  --texto: #22302A;
+  --gris: #6E7A75;
+  --linea: #E3E6E3;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--texto);
+  background: #F1F3F1;
+}
+
+/* 2. Cada pantalla ocupa el ancho de un celular */
+.pantalla {
+  max-width: 420px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 20px;
+  background: var(--fondo);
+  display: flex;
+  flex-direction: column;
+}
+
+/* La clase «oculta» esconde una pantalla */
+.oculta { display: none; }
+
+/* 3. Bienvenida */
+.bienvenida { background: #FFFFFF; position: relative; overflow: hidden; }
+.bienvenida > * { position: relative; z-index: 1; }
+.burbuja { position: absolute !important; border-radius: 50%; z-index: 0 !important; }
+.burbuja.rosa { width: 260px; height: 260px; background: #FBE3DF; top: -80px; right: -90px; }
+.burbuja.verde { width: 230px; height: 230px; background: #E3F1EB; bottom: 60px; left: -120px; }
+.burbuja.mini { width: 60px; height: 60px; background: #FCEFD3; top: 70px; left: 22px; }
+
+.hero { flex: 1; text-align: center; padding-top: 30px; }
+.logo-grande { width: 170px; }
+.nombre {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: normal;
+  font-size: 46px;
+  color: var(--verde-oscuro);
+  margin: 0 0 10px;
+}
+.lema { font-size: 16px; font-weight: 600; max-width: 260px; margin: 0 auto; line-height: 1.4; }
+.lema em { font-style: normal; color: #C2615A; }
+
+.puntos { display: flex; flex-direction: column; gap: 8px; margin: 22px 0 10px; text-align: left; }
+.punto {
+  background: #fff; border: 1px solid var(--linea); border-radius: 12px;
+  padding: 8px 12px; font-size: 14px; display: flex; gap: 10px; align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.04);
+}
+.ico { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.ico-verde { background: #E3F1EB; }
+.ico-rosa { background: #FBE3DF; }
+.ico-amarillo { background: #FCEFD3; }
+
+/* 4. Botones */
+.boton {
+  background: var(--coral); color: #fff; border: none; border-radius: 12px;
+  padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 6px 16px rgba(228,96,79,.35);
+}
+.boton:hover { filter: brightness(1.05); }
+
+/* 5. Barra de arriba (pantalla de Inicio) */
+.barra { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.marca { display: flex; align-items: center; gap: 6px; }
+.marca img { width: 30px; }
+.marca .palabra { font-family: Georgia, "Times New Roman", serif; font-size: 18px; color: var(--verde-oscuro); }
+.derecha { display: flex; align-items: center; gap: 12px; }
+.enlace { color: var(--verde); font-weight: 600; font-size: 14px; }
+.ayuda {
+  width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--verde);
+  color: var(--verde); font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+
+/* 6. Filtros */
+.filtros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.filtro {
+  background: #fff; border: 1px solid var(--linea); border-radius: 10px;
+  padding: 8px 6px; font-size: 13px; text-align: center; white-space: nowrap;
+}
+
+/* 7. Tarjeta de cada empresa */
+.tarjeta {
+  background: #fff; border: 1px solid var(--linea); border-radius: 14px;
+  padding: 14px; margin-bottom: 12px; font-size: 14px; line-height: 1.6;
+}
+.fila { display: flex; justify-content: space-between; align-items: center; }
+.tarjeta h2 { font-size: 16px; margin: 0; }
+.corazon { color: var(--coral); font-size: 18px; }
+.descripcion { color: var(--gris); font-size: 13px; margin: 2px 0 0; }
+.specs { background: var(--verde-claro); border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 13.5px; }
+.specs .cargo { color: var(--verde); font-weight: 600; }
+.specs .etiqueta-dato { color: var(--gris); }
+.ejemplo { font-size: 11px; background: #FBF1D6; color: #7A5B12; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+.ver { color: var(--verde); font-weight: 600; }
+
+/* 8. Aviso y mensajes */
+.aviso { font-size: 11.5px; color: var(--gris); border-top: 1px solid var(--linea); padding-top: 8px; margin-top: auto; }
+.mensaje { color: var(--gris); font-style: italic; text-align: center; }
