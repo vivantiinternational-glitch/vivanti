@@ -1,4 +1,4 @@
-/* estilos.css · v5 · Colores, letras, forma y animaciones de Vivanti */
+/* estilos.css · v7 · Colores, letras, forma y animaciones de Vivanti */
 
 /* 1. Los colores de la app, en un solo lugar */
 :root {
@@ -278,4 +278,9 @@ button:disabled { opacity: .6; cursor: wait; }
 .tour-burbuja p { margin: 8px 0 12px; line-height: 1.45; }
 .tour-contador { font-size: 12px; color: var(--gris); }
 .rebote { animation: crecer .4s cubic-bezier(.2,.9,.3,1.3) both; }
-.version { font-size: 11px; color: #A3ACA8; margin: 6px 0 0; }
+/* 18. NUEVO v7 · Versión e historial */
+.version { display: block; margin: 8px auto 0; background: none; border: none; font-size: 11.5px; color: #8E9A95; text-decoration: underline; cursor: pointer; }
+.lista-versiones { max-height: 55vh; overflow-y: auto; margin: 10px 0; }
+.version-item { border-left: 3px solid var(--linea); padding: 4px 0 4px 12px; margin-bottom: 10px; font-size: 13.5px; }
+.version-item.actual { border-left-color: var(--coral); }
+.version-item ul { margin: 4px 0 0; padding-left: 18px; color: var(--gris); }
