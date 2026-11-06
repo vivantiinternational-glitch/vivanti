@@ -1,0 +1,13 @@
+{
+  "name": "Vivanti",
+  "short_name": "Vivanti",
+  "description": "Oportunidades de trabajo para empezar una nueva vida en Italia (prototipo con datos de ejemplo).",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#1F7A5C",
+  "icons": [
+    { "src": "icono-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icono-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
