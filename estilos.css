@@ -1,4 +1,4 @@
-/* estilos.css · v4 · Colores, letras, forma y animaciones de Vivanti */
+/* estilos.css · v5 · Colores, letras, forma y animaciones de Vivanti */
 
 /* 1. Los colores de la app, en un solo lugar */
 :root {
@@ -262,3 +262,20 @@ button:disabled { opacity: .6; cursor: wait; }
 .mini.rojo { color: #B3261E; }
 .resultado-ok { color: var(--verde); font-weight: 700; }
 .resultado-no { color: #8A5A12; font-weight: 700; }
+
+/* 17. NUEVO v5 · Instructivo paso a paso */
+.tour { position: fixed; inset: 0; z-index: 40; }
+.tour-luz {
+  position: fixed; border-radius: 12px; pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(20, 35, 30, .62), 0 0 0 3px #fff, 0 0 18px 6px rgba(255,255,255,.5);
+  transition: all .45s cubic-bezier(.2,.9,.3,1);
+}
+.tour-burbuja {
+  position: fixed; background: #fff; border-radius: 16px; padding: 14px 16px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25); transition: top .45s ease, left .45s ease; font-size: 14px;
+}
+.tour-burbuja b { color: var(--verde-oscuro); font-size: 15px; }
+.tour-burbuja p { margin: 8px 0 12px; line-height: 1.45; }
+.tour-contador { font-size: 12px; color: var(--gris); }
+.rebote { animation: crecer .4s cubic-bezier(.2,.9,.3,1.3) both; }
+.version { font-size: 11px; color: #A3ACA8; margin: 6px 0 0; }
