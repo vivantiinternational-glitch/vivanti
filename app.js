@@ -1,8 +1,23 @@
-// app.js · v5 · Lo que hace que Vivanti funcione
+// app.js · v7 · Lo que hace que Vivanti funcione
 // v3: 6 pantallas, filtros completos, favoritos, postulación de demostración y animaciones
 // v4: inicio de sesión con Supabase, solicitudes guardadas en Supabase y panel del administrador
 // v5: arreglo: si una oferta no trae «id», la app le pone uno (detalle, favoritos y postularse fallaban)
 //     + instructivo paso a paso que ilumina los botones reales (sale una sola vez; «?» lo repite)
+// v7: número de versión e historial de cambios dentro de la app
+
+// =====================================================================
+// VERSIÓN DE LA APP: cada vez que subas cambios, súmale 1 y agrega una línea al historial
+// =====================================================================
+const VERSION_APP = 7;
+const HISTORIAL = [
+  { version: 7, fecha: "06/11/2026", cambios: ["Número de versión e historial de cambios dentro de la app."] },
+  { version: 6, fecha: "06/11/2026", cambios: ["Ícono de la app en PNG para la pestaña y el celular (antes salía gris)."] },
+  { version: 5, fecha: "06/11/2026", cambios: ["Arreglo: ya funcionan Ver detalle, favoritos y postularse.", "Instructivo paso a paso que ilumina los botones (sale una sola vez; «?» lo repite)."] },
+  { version: 4, fecha: "05/11/2026", cambios: ["Inicio de sesión con Supabase.", "4 cuentas de jurado y panel del administrador para mover etapas y crear escenarios."] },
+  { version: 3, fecha: "05/11/2026", cambios: ["Las 6 pantallas del boceto funcionando.", "20 ofertas de ejemplo en 12 ciudades.", "Filtro de Requisitos, favoritos, postulación, menú de abajo y animaciones."] },
+  { version: 2, fecha: "05/11/2026", cambios: ["Filtros de Ciudad y Área."] },
+  { version: 1, fecha: "05/11/2026", cambios: ["Bienvenida e Inicio con tarjetas. App publicada en GitHub Pages."] }
+];
 
 // =====================================================================
 // 0. CONEXIÓN CON SUPABASE (los datos están en config.js)
@@ -647,6 +662,21 @@ document.getElementById("tour-siguiente").addEventListener("click", siguientePas
 document.getElementById("tour-saltar").addEventListener("click", terminarTour);
 window.addEventListener("resize", function () {
   if (!document.getElementById("tour").classList.contains("oculta")) mostrarPasoTour();
+});
+
+// =====================================================================
+// 13. VERSIÓN E HISTORIAL (v7)
+// =====================================================================
+document.querySelectorAll(".version").forEach(function (v) {
+  v.textContent = `Versión ${VERSION_APP} · ver cambios`;
+  v.addEventListener("click", function () {
+    document.getElementById("lista-versiones").innerHTML = HISTORIAL.map(function (h) {
+      return `<div class="version-item ${h.version === VERSION_APP ? "actual" : ""}">
+        <b>Versión ${h.version}</b> <span class="fecha">· ${h.fecha}</span>
+        <ul>${h.cambios.map(function (c) { return `<li>${c}</li>`; }).join("")}</ul></div>`;
+    }).join("");
+    abrir("panel-versiones");
+  });
 });
 
 // =====================================================================
