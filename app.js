@@ -1,6 +1,8 @@
-// app.js · v4 · Lo que hace que Vivanti funcione
+// app.js · v5 · Lo que hace que Vivanti funcione
 // v3: 6 pantallas, filtros completos, favoritos, postulación de demostración y animaciones
 // v4: inicio de sesión con Supabase, solicitudes guardadas en Supabase y panel del administrador
+// v5: arreglo: si una oferta no trae «id», la app le pone uno (detalle, favoritos y postularse fallaban)
+//     + instructivo paso a paso que ilumina los botones reales (sale una sola vez; «?» lo repite)
 
 // =====================================================================
 // 0. CONEXIÓN CON SUPABASE (los datos están en config.js)
@@ -67,7 +69,7 @@ function irA(nombre, recordar = true) {
     b.classList.toggle("activo", b.dataset.menu === nombre);
   });
 
-  if (nombre === "inicio") aplicarFiltros();
+  if (nombre === "inicio") { aplicarFiltros(); tourSiEsLaPrimeraVez(); }
   if (nombre === "favoritos") mostrarFavoritos();
   if (nombre === "solicitudes") cargarSolicitudes();
   if (nombre === "admin") cargarPanelAdmin();
@@ -84,6 +86,16 @@ document.addEventListener("click", function (evento) {
 const datosListos = fetch("datos.json")
   .then(function (respuesta) { return respuesta.json(); })
   .then(function (empresas) {
+    // ARREGLO v5: cada oferta necesita un número (id) para abrir su detalle,
+    // guardarla en favoritos y postularse. Si no lo trae, se lo ponemos según su posición.
+    empresas.forEach(function (e, i) {
+      if (e.id === undefined || e.id === null) e.id = i + 1;
+      e.id = Number(e.id);
+      if (!Array.isArray(e.beneficios)) e.beneficios = e.beneficios ? [e.beneficios] : [];
+      if (!e.grupoFamiliarTexto) e.grupoFamiliarTexto = e.grupoFamiliar || "Por confirmar";
+      if (!e.visa) e.visa = "Por confirmar";
+      if (!e.descripcion) e.descripcion = "";
+    });
     todasLasEmpresas = empresas;
     llenarFiltro(filtroCiudad, "ciudad");
     llenarFiltro(filtroArea, "area");
@@ -525,7 +537,7 @@ document.getElementById("admin-ver-app").addEventListener("click", function () {
 function abrir(id) { document.getElementById(id).classList.remove("oculta"); }
 function cerrar(id) { document.getElementById(id).classList.add("oculta"); }
 
-document.getElementById("boton-ayuda").addEventListener("click", function () { abrir("panel-ayuda"); });
+document.getElementById("boton-ayuda").addEventListener("click", function () { iniciarTour(); });
 
 document.querySelectorAll(".fondo-panel").forEach(function (fondo) {
   fondo.addEventListener("click", function (evento) {
@@ -543,6 +555,99 @@ function mostrarAviso(texto) {
   clearTimeout(temporizador);
   temporizador = setTimeout(function () { aviso.classList.remove("visible"); }, 2200);
 }
+
+// =====================================================================
+// 12. INSTRUCTIVO PASO A PASO (v5)
+//     Ilumina un botón real de la app y explica para qué sirve.
+//     Sale solo la primera vez que cada usuario entra a buscar; el botón «?» lo repite.
+// =====================================================================
+const PASOS_TOUR = [
+  { elemento: ".filtros", titulo: "1 · Busca ofertas",
+    texto: "Elige una <b>Ciudad</b> y un <b>Área</b>. La lista cambia al instante." },
+  { elemento: "#boton-requisitos", titulo: "2 · Requisitos",
+    texto: "Aquí filtras por nivel de estudio, experiencia, idioma y con quién viajas." },
+  { elemento: "#lista-empresas .tarjeta", titulo: "3 · Cada tarjeta es una oferta",
+    texto: "Ves la empresa, el cargo y lo que pide. Todas son de <b>ejemplo</b>." },
+  { elemento: "#lista-empresas .corazon", titulo: "4 · Guarda tus favoritas",
+    texto: "Toca el <b>♡</b> para guardar una oferta y verla después." },
+  { elemento: "#lista-empresas .ver", titulo: "5 · Ver detalle",
+    texto: "Abre la oferta completa: contrato, beneficios, requisitos y el botón <b>Postularme</b>." },
+  { elemento: '#menu [data-menu="favoritos"]', titulo: "6 · Favoritos",
+    texto: "Aquí encuentras todas las ofertas que guardaste con ♥." },
+  { elemento: '#menu [data-menu="solicitudes"]', titulo: "7 · Mis solicitudes",
+    texto: "Sigue paso a paso cómo va cada postulación, como el seguimiento de un pedido." },
+  { elemento: "#boton-ayuda", titulo: "8 · ¿Dudas?",
+    texto: "Toca el <b>?</b> cuando quieras para ver este instructivo otra vez. ¡Listo! 🎉" }
+];
+let pasoTour = 0;
+
+function claveTour() { return "vivanti-tour-visto-" + (usuario ? usuario.id : "invitado"); }
+
+function tourSiEsLaPrimeraVez() {
+  let visto = false;
+  try { visto = localStorage.getItem(claveTour()) === "si"; } catch (e) { /* sin libreta: se muestra */ }
+  if (!visto) setTimeout(iniciarTour, 700);
+}
+
+function iniciarTour() {
+  if (pantallaActual !== "inicio") irA("inicio");
+  pasoTour = 0;
+  document.getElementById("tour").classList.remove("oculta");
+  mostrarPasoTour();
+}
+
+function terminarTour() {
+  document.getElementById("tour").classList.add("oculta");
+  try { localStorage.setItem(claveTour(), "si"); } catch (e) { /* no pasa nada */ }
+}
+
+function mostrarPasoTour() {
+  const paso = PASOS_TOUR[pasoTour];
+  const objetivo = document.querySelector(paso.elemento);
+  if (!objetivo) { siguientePaso(); return; }        // si no existe ese botón, saltamos el paso
+
+  objetivo.scrollIntoView({ block: "center", behavior: "smooth" });
+  setTimeout(function () {
+    const r = objetivo.getBoundingClientRect();
+    const luz = document.getElementById("tour-luz");
+    const burbuja = document.getElementById("tour-burbuja");
+    const margen = 6;
+
+    // La «luz»: un recuadro sobre el botón; su sombra gigante oscurece todo lo demás
+    luz.style.left = (r.left - margen) + "px";
+    luz.style.top = (r.top - margen) + "px";
+    luz.style.width = (r.width + margen * 2) + "px";
+    luz.style.height = (r.height + margen * 2) + "px";
+
+    // La burbuja con la explicación va debajo del botón, o encima si no cabe
+    document.getElementById("tour-titulo").textContent = paso.titulo;
+    document.getElementById("tour-texto").innerHTML = paso.texto;
+    document.getElementById("tour-contador").textContent = `${pasoTour + 1} de ${PASOS_TOUR.length}`;
+    document.getElementById("tour-siguiente").textContent =
+      pasoTour === PASOS_TOUR.length - 1 ? "¡Empezar!" : "Siguiente →";
+
+    const ancho = Math.min(300, window.innerWidth - 24);
+    burbuja.style.width = ancho + "px";
+    burbuja.style.left = Math.max(12, Math.min(r.left + r.width / 2 - ancho / 2, window.innerWidth - ancho - 12)) + "px";
+    const abajo = r.bottom + 14;
+    const cabeAbajo = abajo + 170 < window.innerHeight;
+    burbuja.style.top = (cabeAbajo ? abajo : Math.max(12, r.top - 14 - 170)) + "px";
+
+    burbuja.classList.remove("rebote"); void burbuja.offsetWidth; burbuja.classList.add("rebote");
+  }, 350);
+}
+
+function siguientePaso() {
+  pasoTour++;
+  if (pasoTour >= PASOS_TOUR.length) { terminarTour(); return; }
+  mostrarPasoTour();
+}
+
+document.getElementById("tour-siguiente").addEventListener("click", siguientePaso);
+document.getElementById("tour-saltar").addEventListener("click", terminarTour);
+window.addEventListener("resize", function () {
+  if (!document.getElementById("tour").classList.contains("oculta")) mostrarPasoTour();
+});
 
 // =====================================================================
 // ¡ARRANCA!
